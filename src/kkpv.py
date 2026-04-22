@@ -37,22 +37,32 @@ def dist(data1: Data, data2: Data, max_moyenne: float, max_absence: float, min_m
 
     return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
-def predict_mention(closest: list[Data]): # On pourrait ajouter la dist pour encore améliorer la précision, plus c'est loin, moins ça compte sur la weight
+def weight_formula(x: float): # Paraît bien dans desmos, peut être changé au besoin https://www.desmos.com/calculator/xi3tsn1dgi
+    return (math.log(x) / 3)**3
+
+def amplify_weight(distance: float): # Récompenser les plus proches
+    return 1 - weight_formula(distance) # En dessous de 1 de distance = bonus à la note de 1
+
+def predict_mention(closest: list[Data], closest_els_tuples: list[tuple[int, float]]): # On pourrait ajouter la dist pour encore améliorer la précision, plus c'est loin, moins ça compte sur la weight
     mentions = [close.mention for close in closest]
-    weights: dict[Mention, int] = {}
+    weights: dict[Mention, float] = {}
 
     for mention in mentions:
         if mention not in weights:
             weights[mention] = 0
-        weights[mention] += 1
+
+        distance = closest_els_tuples[mentions.index(mention)][1]
+        weights[mention] += amplify_weight(distance)
+
+    print(weights)
 
     predicted = max(weights.items(), key=operator.itemgetter(1))[0]
     return predicted
 
 data = Data(Mention.ENCOURAGEMENTS, 12, 5) # 12 de moyenne, 5 1/2j d'abs
 
-closest_els_tuples = ppvoisin_index(formatted, data, 9)
+closest_els_tuples = ppvoisin_index(formatted, data, 30)
 closest_els = [formatted[el_tuple[0]] for el_tuple in closest_els_tuples]
 
 print(closest_els)
-print(predict_mention(closest_els))
+print(predict_mention(closest_els, closest_els_tuples))
