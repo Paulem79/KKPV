@@ -59,10 +59,13 @@ def predict_mention(closest: list[Data], closest_els_tuples: list[tuple[int, flo
     predicted = max(weights.items(), key=operator.itemgetter(1))[0]
     return predicted
 
-data = Data(Mention.ENCOURAGEMENTS, 12, 5) # 12 de moyenne, 5 1/2j d'abs
+def test_prediction(data: Data, k: int = 5):
+    closest_els_tuples = ppvoisin_index(formatted, data, k)
+    closest_els = [formatted[el_tuple[0]] for el_tuple in closest_els_tuples]
 
-closest_els_tuples = ppvoisin_index(formatted, data, 30)
-closest_els = [formatted[el_tuple[0]] for el_tuple in closest_els_tuples]
+    print(predict_mention(closest_els, closest_els_tuples))
 
-print(closest_els)
-print(predict_mention(closest_els, closest_els_tuples))
+test_prediction(Data(Mention.ENCOURAGEMENTS, 12, 5)) # 12 de moyenne, 5 1/2j d'abs
+test_prediction(Data(Mention.ENCOURAGEMENTS, 18, 40))
+test_prediction(Data(Mention.ENCOURAGEMENTS, 8, 10))
+test_prediction(Data(Mention.ENCOURAGEMENTS, 8, 50))
