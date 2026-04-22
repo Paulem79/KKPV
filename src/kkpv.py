@@ -63,9 +63,11 @@ def test_prediction(data: Data, k: int = 5):
     closest_els_tuples = ppvoisin_index(formatted, data, k)
     closest_els = [formatted[el_tuple[0]] for el_tuple in closest_els_tuples]
 
-    print(predict_mention(closest_els, closest_els_tuples))
+    prediction = predict_mention(closest_els, closest_els_tuples)
+    print(prediction)
+    return prediction
 
-test_prediction(Data(Mention.ENCOURAGEMENTS, 12, 5)) # 12 de moyenne, 5 1/2j d'abs
-test_prediction(Data(Mention.ENCOURAGEMENTS, 18, 40))
-test_prediction(Data(Mention.ENCOURAGEMENTS, 8, 10))
-test_prediction(Data(Mention.ENCOURAGEMENTS, 8, 50))
+assert(test_prediction(Data(Mention.ENCOURAGEMENTS, 12, 5)) == Mention.ENCOURAGEMENTS) # 12 de moyenne, 5 1/2j d'abs
+assert(test_prediction(Data(Mention.ENCOURAGEMENTS, 18, 40)) == Mention.FELICITATIONS)
+assert(test_prediction(Data(Mention.ENCOURAGEMENTS, 8, 10)) == Mention.ENCOURAGEMENTS)
+assert(test_prediction(Data(Mention.ENCOURAGEMENTS, 8, 50)) == Mention.PAS_DE_MENTION)
