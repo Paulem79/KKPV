@@ -16,13 +16,14 @@ def get_mention_xy(mention: Mention):
     y = [data.moyenne for data in filtered]
 
     # ajouter au graphique avec la couleur correspondante dans mentions dcp
-    plt.scatter(x, y, c=mentions_colors[mention])
+    plt.scatter(x, y, c=mentions_colors[mention], label=mention)
 
 
 for mention in mentions_colors.keys():
     print(mention)
     get_mention_xy(mention)
 
+plt.legend()
 plt.title('Décision du destin des élèves')
 plt.xlabel('absences')
 plt.ylabel('moyenne')
